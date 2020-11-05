@@ -12,9 +12,10 @@ public class RabbitMQConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQConsumer.class);
 
-    @RabbitListener(queues = "javainuse.queue")
+    @RabbitListener(queues = "topic_electronic_name")
     public void recievedMessage(ShoppingOnline shoppingOnline) throws InvalidPriceException {
         logger.info("Recieved Message From RabbitMQ: " + shoppingOnline);
+        System.out.println("Recieved Message From RabbitMQ: " + shoppingOnline);
         if ( shoppingOnline.getPrice() < 0) {
             throw new InvalidPriceException();
         }

@@ -18,16 +18,16 @@ public class RabbitMQProducerConfig {
     @Value("${deadLetter.rabbitmq.queue}")
     String deadLetterqueueName;
 
-    @Value("${training.rabbitmq.exchange}")
+    @Value("${direct.training.rabbitmq.exchange}")
     String exchange;
 
     @Value("${deadLetter.rabbitmq.exchange}")
     String deadLetterExchange;
 
-    @Value("${training.rabbitmq.routingkey}")
+    @Value("${training.rabbitmq.routing.key}")
     private String routingkey;
 
-    @Value("${deadLetter.rabbitmq.routingkey}")
+    @Value("${deadLetter.rabbitmq.routing.key}")
     private String deadRoutingkey;
 
     @Bean
@@ -45,6 +45,7 @@ public class RabbitMQProducerConfig {
     DirectExchange deadLetterExchange() {
         return new DirectExchange(deadLetterExchange);
     }
+
     @Bean
     DirectExchange exchange() {
         return new DirectExchange(exchange);

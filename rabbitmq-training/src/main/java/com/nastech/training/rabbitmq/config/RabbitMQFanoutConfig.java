@@ -56,7 +56,7 @@ public class RabbitMQFanoutConfig {
     @Value("${queue.doy.routing.key}")
     private String doyKey;
 
-    @Value("$queue.all.routing.key}")
+    @Value("${queue.all.routing.key}")
     private String allQueueKey;
 
     @Value("${deadLetter.rabbitmq.routing.key}")
