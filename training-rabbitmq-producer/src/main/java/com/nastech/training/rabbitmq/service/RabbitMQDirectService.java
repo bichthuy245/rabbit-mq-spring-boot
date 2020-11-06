@@ -39,6 +39,7 @@ public class RabbitMQDirectService {
                     break;
                 default:
                     rabbitTemplate.convertAndSend(directExchange, allQueueKey, messagedata);
+                    break;
             }
             System.out.println("Send message with Direct Exchange: " + messagedata);
         }
