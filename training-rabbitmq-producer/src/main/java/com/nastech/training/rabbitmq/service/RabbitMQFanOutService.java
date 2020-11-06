@@ -20,17 +20,7 @@ public class RabbitMQFanOutService {
 
     public void send(ShoppingOnline messagedata) {
         if (Optional.ofNullable(messagedata).isPresent() && Strings.isNotEmpty(messagedata.getName())) {
-            String groupName = messagedata.getGroupName().trim().toUpperCase();
-            switch (groupName) {
-                case "KIDFASHION":
-                    rabbitTemplate.convertAndSend(fanOutexchange, "", messagedata);
-                    break;
-                case "DOY":
-                    rabbitTemplate.convertAndSend(fanOutexchange, "", messagedata);
-                    break;
-                default:
-                    rabbitTemplate.convertAndSend(fanOutexchange, "", messagedata);
-                    break;
+                rabbitTemplate.convertAndSend(fanOutexchange, "", messagedata);
             }
             System.out.println("Send message with FanOut Exchange: " + messagedata);
         }
