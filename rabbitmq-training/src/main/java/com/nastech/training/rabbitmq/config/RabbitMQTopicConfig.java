@@ -64,100 +64,108 @@ public class RabbitMQTopicConfig {
     private String deadRoutingKey;
 
     @Bean
-    Queue electronicQueue() {
+    Queue electronicQueue () {
         return QueueBuilder.durable(electronicName)
-                .withArgument("x-dead-letter-exchange", deadLetterExchange)
-                .withArgument("x-dead-letter-routing-key", deadRoutingKey)
-                .withArgument("x-message-ttl", 60000).build();
-//        return new Queue(electronicName, false);
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(electronicName, false);
     }
 
     @Bean
-    Queue fashionQueue() {
-//        return QueueBuilder.durable(fashionName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-        return new Queue(fashionName, false);
+    Queue fashionQueue () {
+        return QueueBuilder.durable(fashionName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(fashionName, false);
     }
 
     @Bean
-    Queue doyQueue() {
-//        return QueueBuilder.durable(doyName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-        return new Queue(doyName, false);
+    Queue doyQueue () {
+        return QueueBuilder.durable(doyName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(doyName, false);
     }
 
     @Bean
-    Queue kidFashionQueue() {
-//        return QueueBuilder.durable(kidFashionName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-        return new Queue(kidFashionName, false);
+    Queue kidFashionQueue () {
+        return QueueBuilder.durable(kidFashionName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(kidFashionName, false);
     }
 
     @Bean
-    Queue allQueue() {
-//        return QueueBuilder.durable(allName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-        return new Queue(allName, false);
+    Queue allQueue () {
+        return QueueBuilder.durable(allName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(allName, false);
     }
 
     @Bean
-    Queue deadLetterQueue() {
+    Queue deadLetterQueue () {
         return QueueBuilder.durable(deadLetterQueueName).build();
     }
 
     @Bean
-    TopicExchange topicExchange() {
+    TopicExchange topicExchange () {
         return new TopicExchange(topicExchange);
     }
 
     @Bean
-    TopicExchange deadLetterExchange() {
+    TopicExchange deadLetterExchange () {
         return new TopicExchange(deadLetterExchange);
     }
 
     @Bean
-    Binding electronicBinding(Queue electronicQueue, TopicExchange topicExchange) {
+    Binding electronicBinding (Queue electronicQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(electronicQueue).to(topicExchange).with(electronicKey);
     }
 
     @Bean
-    Binding fashionBinding(Queue fashionQueue, TopicExchange topicExchange) {
+    Binding fashionBinding (Queue fashionQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(fashionQueue).to(topicExchange).with(fashionKey);
     }
 
     @Bean
-    Binding kidFashionBinding(Queue kidFashionQueue, TopicExchange topicExchange) {
+    Binding kidFashionBinding (Queue kidFashionQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(kidFashionQueue).to(topicExchange).with(kidFashionKey);
     }
 
     @Bean
-    Binding doyBinding(Queue doyQueue, TopicExchange topicExchange) {
+    Binding doyBinding (Queue doyQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(doyQueue).to(topicExchange).with(doyKey);
     }
 
     @Bean
-    Binding allBinding(Queue allQueue, TopicExchange topicExchange) {
+    Binding allBinding (Queue allQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(allQueue).to(topicExchange).with(allQueueKey);
     }
 
     @Bean
-    Binding DLQbinding() {
+    Binding DLQbinding () {
         return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with(deadRoutingKey);
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter() {
+    public MessageConverter jsonMessageConverter () {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
+    MessageListenerContainer messageListenerContainer (ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
         return simpleMessageListenerContainer;
     }
 
-    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    public AmqpTemplate rabbitTemplate (ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;

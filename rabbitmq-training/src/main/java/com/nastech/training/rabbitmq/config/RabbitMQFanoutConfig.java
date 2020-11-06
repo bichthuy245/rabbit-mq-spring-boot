@@ -5,7 +5,6 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
@@ -34,14 +33,9 @@ public class RabbitMQFanoutConfig {
     @Value("${queue.all.name}")
     String allName;
 
-    @Value("${deadLetter.rabbitmq.queue}")
-    String deadLetterQueueName;
-
+    // Declare FanOut Exchange
     @Value("${fan.out.training.rabbitmq.exchange}")
     String fanOutExchange;
-
-    @Value("${deadLetter.rabbitmq.exchange}")
-    String deadLetterExchange;
 
     // Declare RoutingKey
     @Value("${queue.electronic.routing.key}")
@@ -59,37 +53,29 @@ public class RabbitMQFanoutConfig {
     @Value("${queue.all.routing.key}")
     private String allQueueKey;
 
-    @Value("${deadLetter.rabbitmq.routing.key}")
-    private String deadRoutingKey;
-
     @Bean
     Queue electronicQueue () {
-        return QueueBuilder.durable(electronicName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
+        return new Queue(electronicName, false);
     }
 
     @Bean
     Queue fashionQueue () {
-        return QueueBuilder.durable(fashionName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
+        return new Queue(fashionName, false);
     }
 
     @Bean
     Queue doyQueue () {
-        return QueueBuilder.durable(doyName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
+        return new Queue(doyName, false);
     }
 
     @Bean
     Queue kidFashionQueue () {
-        return QueueBuilder.durable(kidFashionName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
+        return new Queue(kidFashionName, false);
     }
 
     @Bean
     Queue allQueue () {
-        return QueueBuilder.durable(allName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
+        return new Queue(allName, false);
     }
 
     @Bean

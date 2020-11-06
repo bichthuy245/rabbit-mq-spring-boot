@@ -6,7 +6,6 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
@@ -63,52 +62,65 @@ public class RabbitMQDirectConfig {
     @Value("${deadLetter.rabbitmq.routing.key}")
     private String deadRoutingKey;
 
-//    @Bean
-//    Queue deadLetterQueue () {
-//        return QueueBuilder.durable(deadLetterQueueName).build();
-//    }
-
     @Bean
     Queue electronicQueue () {
-//        return QueueBuilder.durable(electronicName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-        return new Queue(electronicName, false);
+        return QueueBuilder.durable(electronicName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(electronicName, false);
     }
 
-//    @Bean
-//    Queue fashionQueue () {
-////        return QueueBuilder.durable(fashionName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-////                .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-//        return new Queue(fashionName, false);
-//    }
-
-//    @Bean
-//    Queue doyQueue () {
-//        return QueueBuilder.durable(doyName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-//    }
-//
-//    @Bean
-//    Queue kidFashionQueue () {
-//        return QueueBuilder.durable(kidFashionName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-//    }
-//
-//    @Bean
-//    Queue allQueue () {
-//        return QueueBuilder.durable(allName).withArgument("x-dead-letter-exchange", deadLetterExchange)
-//                           .withArgument("x-dead-letter-routing-key", deadRoutingKey).build();
-//    }
+    @Bean
+    Queue fashionQueue () {
+        return QueueBuilder.durable(fashionName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(fashionName, false);
+    }
 
     @Bean
-    DirectExchange exchange() {
+    Queue doyQueue () {
+        return QueueBuilder.durable(doyName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(doyName, false);
+    }
+
+    @Bean
+    Queue kidFashionQueue () {
+        return QueueBuilder.durable(kidFashionName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(kidFashionName, false);
+    }
+
+    @Bean
+    Queue allQueue () {
+        return QueueBuilder.durable(allName)
+                           .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                           .withArgument("x-dead-letter-routing-key", deadRoutingKey)
+                           .withArgument("x-message-ttl", 60000).build();
+        //        return new Queue(allName, false);
+    }
+
+    @Bean
+    Queue deadLetterQueue () {
+        return QueueBuilder.durable(deadLetterQueueName).build();
+    }
+
+    @Bean
+    DirectExchange directExchange () {
         return new DirectExchange(directExchange);
     }
 
-//    @Bean
-//    DirectExchange deadLetterExchange () {
-//        return new DirectExchange(deadLetterExchange);
-//    }
+    @Bean
+    DirectExchange deadLetterExchange () {
+        return new DirectExchange(deadLetterExchange);
+    }
 
     @Bean
     Binding electronicBinding (Queue electronicQueue, DirectExchange exchange) {
@@ -136,16 +148,21 @@ public class RabbitMQDirectConfig {
     }
 
     @Bean
+    Binding DLQbinding () {
+        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange()).with(deadRoutingKey);
+    }
+
+    @Bean
     public MessageConverter jsonMessageConverter () {
         return new Jackson2JsonMessageConverter();
     }
 
-//    @Bean
-//    MessageListenerContainer messageListenerContainer (ConnectionFactory connectionFactory) {
-//        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
-//        simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
-//        return simpleMessageListenerContainer;
-//    }
+    @Bean
+    MessageListenerContainer messageListenerContainer (ConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
+        simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
+        return simpleMessageListenerContainer;
+    }
 
     public AmqpTemplate rabbitTemplate (ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
