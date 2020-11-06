@@ -57,7 +57,7 @@ public class RabbitMQDirectExchangeConfig {
                            .withArgument("x-dead-letter-exchange", deadLetterExchange)
                            .withArgument("x-dead-letter-routing-key", deadRoutingKey)
                            .withArgument("x-message-ttl", 60000).build();
-        //        return new Queue(doyName, false);
+        //        return new Queue(cameraName, false);
     }
 
     @Bean
@@ -66,7 +66,7 @@ public class RabbitMQDirectExchangeConfig {
                            .withArgument("x-dead-letter-exchange", deadLetterExchange)
                            .withArgument("x-dead-letter-routing-key", deadRoutingKey)
                            .withArgument("x-message-ttl", 60000).build();
-        //        return new Queue(kidFashionName, false);
+        //        return new Queue(watchName, false);
     }
 
     @Bean
